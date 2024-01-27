@@ -1,0 +1,118 @@
+import os
+mentordir = '/Users/spencerfreeman/Desktop/Jens_Project/Fake_data/Mentors'
+menteedir = '/Users/spencerfreeman/Desktop/Jens_Project/Fake_data/mentees'
+rootdir_mentor = '/Users/spencerfreeman/Desktop/Jens_Project/Fake_data/Mentors/'
+rootdir_mentee = '/Users/spencerfreeman/Desktop/Jens_Project/Fake_data/mentees/'
+folder_to_view = 'Fake_data/Mentors'
+mentorlist = []
+menteelist = []
+mentordict = {}
+menteedict = {}
+namelist_mentor = []
+namelist_mentee = []
+
+
+#The following loop iterates through all Mentor files and
+#Pulls out names, adding them to namelist_mentor, and then pulls out all answers, and adds to
+#mentorlist
+
+for file in os.listdir(mentordir):
+    if file.startswith('mentor'):
+        mentor = open(rootdir_mentor+file)
+        for line in mentor:
+            if line.startswith('Name'):
+                line=line.strip()
+                namesplit = line.split(':')
+                mentorname = namesplit[1]
+                namelist_mentor.append(mentorname)
+            if line.startswith('question'):
+                line=line.strip()
+                datasplit=line.split(':')
+                mentorlist.append(datasplit[1])
+
+#Now that we have our names in a list, and our data answers in a list, this while loop combines
+#the two into a dictionary, where the key is the name and the value is a list of their answers
+#The loop terminates once it's passed through as many times as len(namlist_mentor), meaning
+#it will work regardless of the number of files and should always terminate properly
+
+index=0
+while index<len(namelist_mentor):
+    mentordict[namelist_mentor[index]]= mentorlist[(10*index):((10*index)+10)]
+    index=index+1
+
+#The following two loops do the same thing with menteee files. We now have all of our mentors
+#with their respective answers in one dictionary, and all of our mentees with their respective
+#answers in a second dictionary. The next step will be to pull the values (lists of answers),
+#of each mentor, compare to values of each mentee to get a likeness score, and then make a new
+#dictionary with the mentor+mentee as the key, and the likeness score as the value. This, after
+#some sorting should be the final product
+
+for file in os.listdir(menteedir):
+    if file.startswith('mentee'):
+        mentee = open(rootdir_mentee+file)
+        for line in mentee:
+            if line.startswith('Name'):
+                line=line.strip()
+                menteesplit=line.split(':')
+                menteename = menteesplit[1]
+                namelist_mentee.append(menteename)
+            if line.startswith('question'):
+                line=line.strip()
+                datasplit_mentee=line.split(':')
+                menteelist.append(datasplit_mentee[1])
+
+index_mentee=0
+while index_mentee<len(namelist_mentee):
+    menteedict[namelist_mentee[index_mentee]]=menteelist[(10*index_mentee):((10*index_mentee)+10)]
+    index_mentee=index_mentee+1
+
+#This block adds all possible combinations of mentors and mentees into a single list, and
+#then adds their raw likeness scores into a separate list
+newdict={}
+newlist=[]
+mentor_mentee_list=[]
+for mentor,score in mentordict.items():
+    for mentee,value in menteedict.items():
+        mentor_mentee_list.append("Mentor:"+mentor+" Mentee:"+mentee+" Likeness score:")
+        for i in range(10):
+            total = abs(int(score[i])-int(value[i]))
+            newlist.append(total)
+            
+#This loop takes the raw likeness score and sums it into a single value
+index = 0
+sumlist=[]
+while index<(len(newlist))/10:
+    sumscore=sum(newlist[(10*index):((10*index)+10)])
+    sumlist.append(sumscore)
+    index=index+1
+
+#Finally, this list averages the sumscore list to give an actual likeness score. Currently, the
+#closer to zero the better, but we could take 10-x/10 to get a % score, which may be more clear
+avglist=[]
+#percent_score=[]
+for item in sumlist:
+    item=item/10
+    avglist.append(item)
+    #percent=(10-item)/10
+    #percent_score.append(percent)
+
+#This creates a dictionary, pairing each possible mentor/mentee pair with their respective likeness
+#score from avglist
+finaldict={}
+index=0
+while index<len(avglist):
+    finaldict[mentor_mentee_list[index]]=avglist[index]
+    index=index+1
+
+#The final two blocks are for organization. The dictionary is downloaded into a list of tuples
+#so that it can be sorted by score, and then the pairs with their scores, sorted from low to high
+#are printed out as the final product
+
+tuplist=[]
+for k,v in finaldict.items():
+    newtup=(v,k)
+    tuplist.append(newtup)
+
+final_product=sorted(tuplist)
+for k,v in final_product:
+    print(v,k)
