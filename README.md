@@ -4,8 +4,8 @@ A tool to match mentors and mentees based on a survey likeness score
 This program is designed to loop through two directories containing survey results saved in .txt files.
 The format of the .txt files is as follows:
   name: "mentor/mentee name"
-  question 1: #
-  question 2: #
+  question 1: #\n
+  question 2: #\n
   ...
   question 10: #
 
