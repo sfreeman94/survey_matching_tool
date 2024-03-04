@@ -1,0 +1,44 @@
+import os
+import csv
+
+mentor_file = "/Users/spencerfreeman/Desktop/Jens_project/Real_data_structure/Mentors.csv"
+mentee_file = "/Users/spencerfreeman/Desktop/Jens_project/Real_data_structure/Mentees.csv"
+holding_file = "/Users/spencerfreeman/Desktop/Jens_project/Real_data_structure/holding_file_competencies.csv"
+
+
+mentor_dict = {}
+with open(mentor_file, 'r') as fh_mentor:
+    reader_object_mentor = csv.reader(fh_mentor)
+    for line in reader_object_mentor:
+        mentor_id = str(line[0])
+        competencies_mentor = line[9].split(';')
+        top_3_mentor = competencies_mentor[0:3]
+        mentor_dict[mentor_id] = top_3_mentor
+
+mentee_dict = {}
+with open(mentee_file, 'r') as fh_mentee:
+    reader_object_mentee = csv.reader(fh_mentee)
+    for line in reader_object_mentee:
+        mentee_id = str(line[0])
+        competencies_mentee = line[9].split(';')
+        top_3_mentee = competencies_mentee[0:3]
+        mentee_dict[mentee_id] = top_3_mentee
+
+
+pairing_scores_competencies = {}
+for mentor_id, mentor_competencies in mentor_dict.items():
+    for mentee_id, mentee_competencies in mentee_dict.items():
+        score = sum(1 for goal in mentor_competencies if goal in mentee_competencies)
+        real_score=score/3
+        percent_score = real_score*100
+        pairing_scores_competencies[(mentee_id, mentor_id)] = percent_score
+
+sorted_pairings_competencies = sorted(pairing_scores_competencies.items(), key=lambda x: x[1], reverse=True)
+
+with open(holding_file, 'w') as f:
+    writer = csv.writer(f)
+    for pairing, score in sorted_pairings_competencies:
+        writer.writerow(list(pairing) + [score])
+        #writer.writerow([score] + list(pairing))
+
+print(sorted_pairings_competencies)
