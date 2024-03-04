@@ -1,0 +1,65 @@
+import os
+import csv
+
+mentor_file = "/Users/spencerfreeman/Desktop/Jens_project/Real_data_structure/Mentors.csv"
+mentee_file = "/Users/spencerfreeman/Desktop/Jens_project/Real_data_structure/Mentees.csv"
+holding_file_demo = "/Users/spencerfreeman/Desktop/Jens_project/Real_data_structure/holding_file_demo.csv"
+
+mentor_dict = {}
+with open(mentor_file, 'r') as fh_mentor:
+    reader_object_mentor = csv.reader(fh_mentor)
+    for line in reader_object_mentor:
+        if line[0] == 'ID':
+            continue
+        else:
+            mentor_ID = line[0]
+        if line[8] == 'I do not have a preference':
+            lang = 'no pref'
+            race = 'no pref'
+            gender = 'no pref'
+        else:
+            lang = line[6]
+            gender = line[7]
+            if line[4] == 'N/A I only checked one category above' or len(line[4])<1:
+                race = line[3]
+            else:
+                race=line[4]
+        mentor_dict[mentor_ID] = (lang,gender,race)
+
+
+
+mentee_dict = {}
+with open(mentee_file, 'r') as fh_mentee:
+    reader_object_mentee = csv.reader(fh_mentee)
+    for line in reader_object_mentee:
+        if line[0] == 'ID':
+            continue
+        else:
+            mentee_ID = line[0]
+        if line[8] == 'I do not have a preference':
+            lang = 'no pref'
+            race = 'no pref'
+            gender = 'no pref'
+        else:
+            lang = line[6]
+            gender = line[7]
+            if line[4] == 'N/A I only checked one category above' or len(line[4])<1:
+                race = line[3]
+            else:
+                race=line[4]
+        mentee_dict[mentee_ID] = (lang,gender,race)
+
+
+        
+demo_match = {}
+for mentee_id, mentee_demo in mentee_dict.items():
+    for mentor_id, mentor_demo in mentor_dict.items():
+        if mentee_demo == mentor_demo:
+            demo_match[mentee_id,mentor_id] = 'demographic match'
+        else:
+            demo_match[mentee_id,mentor_id] = 'spot check manually'
+
+with open(holding_file_demo, 'w') as f:
+    writer = csv.writer(f)
+    for pairing, match_status in demo_match.items():
+        writer.writerow([pairing[0], pairing[1], match_status])
