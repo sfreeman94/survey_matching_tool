@@ -1,0 +1,13 @@
+This program is now finished, it's designed to work with the real data pulled from mentor and mentee surveys. Matching is based on three separate 
+categories. This first is a list of 26 categories that mentees were allowed to choose from that they may be interested in learning about, and
+mentors could choose from if they felt comfortable teaching. The score for this categorie is a simple calculation where overlapping items
+are worth a single point, and they're divided by the total number of items that the mentee is interested in learning about. The second category
+comes from six standard competency categories which mentors and mentees were both asked to prioritize in order of what they most want to
+learn (mentees) or what they feel they're most equipped to teach (mentors). Onle the top three priorities were considered, and the matching
+items were divided by 3 to give a percent. These two scores were combined with a weighting of 60% going to competencies and 40% going to the first
+category. Finally, demographic data was considered. If the mentor or mentee indicated that they cared about being paired with somebody of
+the same demographic with regard to langauge, gender identity or race/ethnicity, then their responses for these categories were compared. Because
+participants were allowed to type into these categories manually rather than selecting pre-written choices, the matches were difficult,
+and mismatches will need to be spot-checked manually to determine if they're falsely negative. Future iterations of this program may include
+regular expressions to reduce the amount of false negatives. I had no input with regard to survey design, or I likely would have
+collected data little bit differently, but the program is currently functional and automates the majority of the matching process.
